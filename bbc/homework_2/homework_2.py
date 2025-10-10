@@ -16,7 +16,7 @@ class String:
         if self.method == 1:
             print(f'Метод find: {self.text.find('круто')}:{self.text.find('круто') + 5}')
         if self.method == 2:
-            print(f'Метод index: {self.text.index('круто')}:{self.text.index('круто') + 5}')      #напиши ещё условия для методов
+            print(f'Метод index: {self.text.index('круто')}:{self.text.index('круто') + 5}')
         if self.method == 3:
             print(f'Количество букв "о" в строке: {self.text.lower().count('о')}')
         if self.method == 4:
@@ -27,16 +27,16 @@ class String:
 
     def lvl4(self):
         if self.method == 1:
-            for i in range(min(len(self.text), len(self.text2))):
-                print(f'Метод isdigit() для первой строки: {self.text[i]} - {self.text[i].isdigit()}, для второй строки: {self.text2[i]} - {self.text2[i].isdigit()}')
+            for i in range(6):
+                print(f'Метод isdigit() для первой строки: {self.text[i]} - {self.text[i].isdigit()}, для второй строки: {self.text2[i]} - {self.text2[i].isdigit()}\n')
         
         if self.method == 2:
-            for i in range(min(len(self.text), len(self.text2))):
-                print(f'Метод isalpha()) для первой строки: {self.text[i]} - {self.text[i].isalpha()}, для второй строки: {self.text2[i]} - {self.text2[i].isalpha()}')
+            for i in range(6):
+                print(f'Метод isalpha()) для первой строки: {self.text[i]} - {self.text[i].isalpha()}, для второй строки: {self.text2[i]} - {self.text2[i].isalpha()}\n')
         
         if self.method == 3:
-            print(f'Метод strip() для первой строки: {self.text.strip()}, для второй строки: {self.text2.strip()}')
-
+            print(f'Метод strip() для первой строки: {self.text.strip()}, для второй строки: {self.text2.strip()}\n')
+        
     def lvl5(self):
        form_str = ' '.join(self.text.strip().capitalize().split(';'))
        print(f'Приведение строки "{self.text}" к формату: "{form_str}"')
@@ -66,7 +66,7 @@ elif level == 3:
     test.lvl3()
 elif level == 4:
     text2 = input('\nВведите вторую строку для теста: ')
-    String.text2 = text2
+    test.text2 = text2
     test.lvl4()
 elif level == 5:
     test.lvl5()
