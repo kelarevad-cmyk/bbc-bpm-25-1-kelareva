@@ -9,7 +9,9 @@ class Food:
         print(f'Твоё здоровье поднялось с {self.health} до {self.health + 1}')
         self.health += 1
         return self.health
-    
+
+class Chest:
+    pass
 
 class Monster:
     def __init__(self, health, sword, shield):
@@ -86,4 +88,5 @@ for i in range(n * n):
                             print('Поздравляю! Вы использовали тотем бесммертия, поэтому ваш ездоровье вновь 3 единицы!)\n')
                             health = 3
                         else:
-                            print('WASTED\n')
+                            print('*WASTED*\n')
+                            break;
