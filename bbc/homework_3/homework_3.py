@@ -1,21 +1,14 @@
 from random import randint, shuffle
 from itertools import *
 
-def health_check(health, food):
-    if (health > 0):
-        if (food > 0):
-            answer = input('Желаешь ли ты поесть? ')
-            if answer == 'Да':
-                traveler = Food(food, health)
-
 class Food:
     def __init__(self, food, health):
         self.food = food
         self.health = health
     def eat(self):
         print(f'Твоё здоровье поднялось с {self.health} до {self.health + 1}')
-        self.food -= 1
         self.health += 1
+        return self.health
     
 
 class Monster:
@@ -23,18 +16,17 @@ class Monster:
         self.health = health
         self.sword = sword
         self.shield = shield
-    def m_attack(self):
-        print('Берегись! Монстр тебя атакует!')
-        if (self.shield):
+    def attack(self):
+        print('\nБерегись! Монстр тебя атакует!')
+        if (self.sword):
+            print('Ты убил монстра! Теперь ты real human being and a real hero! Но тепепь у тебя нет меча(\n')
+        elif (self.shield):
             print('У тебя есть щит! Ты здорово отбил атаку монстра! Но больше у тебя нет щита(\n')
         else:
             print(f'Тебе здорово прилетело и твоё здоровье упало с {self.health} до {self.health - 1}\n')
+            print('Монстр никуда не ушёл, но ты нашёл в себе силы сбежать\n')
             self.health -= 1
-            return self.health
-    def u_attack(self):
-        if (self.sword):
-            print('Ты убил монстра! Теперь ты real human being and a real hero! Но тепепь у тебя нет меча(\n')
-
+        return self.health
 
 
 
@@ -64,13 +56,34 @@ level = ['пусто'] + level
 level = [[level[i * n + j] for j in range(n)] for i in range(n)]
 #rooms = [['пусто'].extend([])]
 # deep copy (редактирование списков либо мод списков)
-inventory = ['щит']
+inventory = ['тотем бессмертия', 'еда']
 curr_x, curr_y = 0, 0
-health = 3
+health = 1
 for i in range(n * n):
-    room_now = level[i // 5][i % 5]
+    room_now = level[i // n][i % n]
     if room_now == 'монстр':
         traveler = Monster(health, 'меч' in inventory, 'щит' in inventory)
-        health = traveler.m_attack()
-        if 'щит' in inventory:
+        health = traveler.attack()
+        
+        if 'меч' in inventory:
+            del inventory[inventory.index('меч')]
+            level[i // n][i % n] = 'пусто'
+        elif 'щит' in inventory:
             del inventory[inventory.index('щит')]
+            level[i // n][i % n] = 'пусто'
+        else:
+            if (health != 3):
+                if (inventory.count('еда') > 0):
+                    answer = input('Желаешь ли ты поесть, чтобы поднять здоровье на одну единицу? ')
+                    if answer.lower() == 'да':
+                        traveler = Food(inventory.count('еда'), health)
+                        health = traveler.eat()
+                        del inventory[inventory.index('еда')]
+                if health == 0:
+                    if ('тотем бессмертия' in inventory):
+                        answer = input('Хотите ли вы использовать тотем бессмертия? ')
+                        if answer.lower() == 'да':
+                            print('Поздравляю! Вы использовали тотем бесммертия, поэтому ваш ездоровье вновь 3 единицы!)\n')
+                            health = 3
+                        else:
+                            print('WASTED\n')
