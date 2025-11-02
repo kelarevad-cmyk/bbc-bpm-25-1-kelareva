@@ -45,9 +45,18 @@ class Monster:
             
         return self.health
 
+def moving(x, y, operation, n):
+    ops = ['ц', 'ф', 'ы', 'в']
+    operations = [[0, 1], [-1, 0], [0, -1], [1, 0]]
+    
+    new_x = x + operations[ops.index(operation)][0]
+    new_y = y + operations[ops.index(operation)][1]
+    if (new_x >= 0 and new_y >= 0 and new_x < n and new_y < n):
+        return new_x, new_y
+    else:
+        return x, y
 
-
-
+print('\nПравила пермещения: ц (клавиша w) - вверх на одну позицию, ф (клавиша a) - влево, ы (клавиша s) - вниз, в (клавиша d) - право\n')
 
 items = ['меч', 'щит', 'еда', 'тотем бессмертия']
 
@@ -75,10 +84,16 @@ level = ['пусто'] + level
 level = [[level[i * n + j] for j in range(n)] for i in range(n)]
 # deep copy (редактирование списков либо мод списков)
 inventory = []
-curr_x, curr_y = 0, 0
+curr_x, curr_y, door_x, door_y = 0, 0, 0, 0
+
+for i in range(n):
+    if 'комната с дверью' in level[i]:
+        door_x = i
+        door_y = level[i].index('комната с дверью')
 health = 3
-for i in range(n * n):
-    room_now = level[i // n][i % n]
+while True:
+    room_now = level[curr_x][curr_y]
+    print(f'Комната: {room_now.capitalize()}')
     if room_now == 'монстр':
         traveler = Monster(health, 'меч' in inventory, 'щит' in inventory)
         health = traveler.attack()
@@ -137,4 +152,52 @@ for i in range(n * n):
         print('Поздравляю! Вы нашли ключ, он поможет вам сбежать из лабиринта! Теперь найдите дверь.\n')
         inventory.append('ключ')
     elif room_now == 'комната с дверью':
-        pass
+        final = 1
+        print('Вы наткнулись на комнаты с дверью! Это прямой выход из этого лабиринта!\n')
+        if ('ключ' in inventory):
+            print('У вас есть ключ, окрывайте дверь\n')
+            if 'чей-то талисман' in inventory:
+                print('Вы взглянули на оборотную сторону талисмана, кажется там что-то написано...')
+                answer = input('Посмотрите? ')
+                if answer.lower() == 'да':
+                    print('Тут написано "Обернись". Что за бред?\n')
+                    answer = input('Вы хотите обернуться? ')
+                    if answer.lower() == 'да':
+                        print('\n...')
+                        final = 0
+            if final:
+                print('Поздравляю! Вы прошли игру.')
+                print('MISSION COMPLETED')
+                break
+        else:
+            print('Похоже у вас нет ключа, чтобы открыть эту дверь( Поищите получше в лабиринте')
+    elif room_now == 'портал':
+        print('Вы в комнате с порталом!\n')
+        answer = input('Хотите попасть в команту с дверью? ')
+        print('\n')
+        if answer.lower() == 'да':
+            curr_x, curr_y = door_x, door_y
+    elif room_now == 'ловушка':
+        choice = randint(1, 2)
+        if len(inventory) > 0:
+            if choice:
+                deleted = inventory.pop(randint(0, len(inventory) - 1))
+                print(f'Вы попали в ловушку, из вашего инвентаря украли {deleted}\n')
+            else:
+                spec = ['еда', 'тотем бессмертия', 'чей-то старый талисман']
+                added = spec[randint(0, 2)]
+                print(f'У вас в инвентарь что-то случайно закотилось! Похоже это: {added}\n')
+                inventory.append(added)
+        else:
+            spec = ['еда', 'тотем бессмертия', 'чей-то старый талисман']
+            added = spec[randint(0, 2)]
+            print(f'У вас в инвентарь что-то случайно закотилось! Похоже это: {added}\n')
+            inventory.append(added)
+    x, y = curr_x, curr_y
+    while True:
+        answer = input('Куда желаете отправится дальше? ')
+        print('\n', end='')
+        curr_x, curr_y = moving(curr_x, curr_y, answer, n)
+        if curr_x != x or curr_y != y:
+            break
+        print('Вы вышли за пределы лабиринта! Так нельзя, попробуйте ещё раз\n')
