@@ -14,7 +14,7 @@ class Chest:
         self.quantity = randint(1, 3)
         
     def findings(self):
-        items = ['меч', 'щит', 'еда', 'тотем бессмертия', 'снаряжение']
+        items = ['меч', 'щит', 'еда', 'тотем бессмертия']
         new_inventory = []
         for i in range(self.quantity):
             item = choice(items)
@@ -32,7 +32,7 @@ class Monster:
     def attack(self):
         print('\nБерегись! Монстр тебя атакует!')
         if (self.sword):
-            print('Ты убил монстра! Теперь ты real human being and a real hero! Но тепепь у тебя нет меча(\n')
+            print('Ты убил монстра! Теперь ты real human being and a real hero! Но теперь у тебя нет меча(\n')
         elif (self.shield):
             print('У тебя есть щит! Ты здорово отбил атаку монстра! Но больше у тебя нет щита(\n')
         else:
@@ -49,7 +49,7 @@ class Monster:
 
 
 
-items = ['меч', 'щит', 'еда', 'тотем бессмертия', 'снаряжение']
+items = ['меч', 'щит', 'еда', 'тотем бессмертия']
 
 print('Введите уровень сложности: 1 - самый лёгкий (размеры лабиринта 3x3, ловушек - 0, сундуков - 2, пустых комнат - 4, монстров - 1)\n')
 print('2 - средний (размеры лабиринта 5x5, ловушек - 5, сундуков - 4, монстров - 2, пустых комнат - 11, порталов - 1)\n')
@@ -73,7 +73,6 @@ for i in range(len(level_chars)):
 shuffle(level)
 level = ['пусто'] + level
 level = [[level[i * n + j] for j in range(n)] for i in range(n)]
-#rooms = [['пусто'].extend([])]
 # deep copy (редактирование списков либо мод списков)
 inventory = []
 curr_x, curr_y = 0, 0
@@ -111,24 +110,31 @@ for i in range(n * n):
                     else:
                         print('WASTED\n')
                         break
-    if room_now == 'сундук':
+    elif room_now == 'сундук':
         traveler = Chest()
         chest = traveler.findings()
-        if len:
-            print(f'В сундуке было только это: {chest[0]}\n')
-            answer = input(f'Хотите взять {chest[0]}? ')
-            if answer.lower() == 'да':
-                inventory.append(chest[0])
+        if len(chest) == 1:
+            print(f'Оххх чорт чорт, в сундуке было только это: {chest[0]}\n')
         else:
             print('В сундуке вы нашли эти вещи:', ', '.join(chest))
             
-            answer = input('Хотите взять всё или только некоторые предметы? (пишите либо все/всё, либо что угодно)')
-
-            if (answer.lower() == 'все' or answer.lower() == 'всё'):
-                inventory.extend(chest)
-            else:
-                for el in chest:
-                    answer = input(f'Хотите взять {el}? ')
-                    print('\n', end='')
-                    if answer == 'Да':
-                        inventory.append(el)
+        for el in chest:
+            answer = input(f'Хотите взять {el}? ')
+            
+            if answer.lower() == 'да':
+                if (el in ['щит', 'меч'] and el in inventory):
+                    print(f'Обойдёшься! У тебя нет места на ещё один {el}))\n')
+                elif (el == 'еда' and health < 3):
+                    answer = input('Желаешь ли ты поесть, чтобы поднять здоровье на одну единицу? ')
+                    if answer.lower() == 'да':
+                        traveler = Food(1, health)
+                        health = traveler.eat()
+                else:
+                    inventory.append(el)
+        print('\n', end='')
+        chest = []
+    elif room_now == 'ключ':
+        print('Поздравляю! Вы нашли ключ, он поможет вам сбежать из лабиринта! Теперь найдите дверь.\n')
+        inventory.append('ключ')
+    elif room_now == 'комната с дверью':
+        pass
