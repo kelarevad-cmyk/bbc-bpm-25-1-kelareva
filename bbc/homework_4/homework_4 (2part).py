@@ -4,7 +4,6 @@ import numpy as np
 with open('tested.csv') as f:
     titanic = pd.read_csv(f, index_col=0)
 
-
 survive_count = len(titanic['Survived'])
 
 survived_male = titanic['Survived'].loc[titanic['Sex'] == 'male'].sum() / survive_count
@@ -20,3 +19,8 @@ filter1 = titanic.loc[(titanic['Age'] > 30)
 filter2 = titanic.loc[((titanic['Age'] < 18)
                       | (titanic['Sex'] == 'female'))
                       & (titanic['Survived'])]
+
+new_titanic = titanic.groupby(['Pclass', 'Sex'])
+print(new_titanic['Age'].agg('mean'))
+print(new_titanic['Survived'].apply(lambda x: (x.sum() / x.count()) * 100))
+print(new_titanic['Fare'].agg('mean'))
