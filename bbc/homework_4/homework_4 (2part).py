@@ -19,8 +19,11 @@ filter1 = titanic.loc[(titanic['Age'] > 30)
 filter2 = titanic.loc[((titanic['Age'] < 18)
                       | (titanic['Sex'] == 'female'))
                       & (titanic['Survived'])]
+for i in titanic.columns.tolist():
+    print(i)
 
 new_titanic = titanic.groupby(['Pclass', 'Sex'])
 print(new_titanic['Age'].agg('mean'))
 print(new_titanic['Survived'].apply(lambda x: (x.sum() / x.count()) * 100))
 print(new_titanic['Fare'].agg('mean'))
+titanic.to_csv('output.csv')
